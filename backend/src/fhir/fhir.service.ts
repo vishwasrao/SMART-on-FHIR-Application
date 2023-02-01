@@ -24,30 +24,37 @@ export class FhirService {
     }
   }
 
-  async getAccessToken(tokenEndpoint: string, authorizationCode: string, redirectUrl: string, clientId: string, clientSecret: string){
+  async getAccessToken(
+    tokenEndpoint: string,
+    authorizationCode: string,
+    redirectUrl: string,
+    clientId: string,
+    clientSecret: string,
+  ) {
     try {
       const data = qs.stringify({
-        'grant_type': 'authorization_code',
-        'code': authorizationCode,
-        'redirect_uri': redirectUrl 
+        grant_type: 'authorization_code',
+        code: authorizationCode,
+        redirect_uri: redirectUrl,
       });
-      const  config = {
+      const config = {
         method: 'post',
         url: tokenEndpoint,
-        headers: { 
-          'Accept': 'application/json', 
-          'Content-Type': 'application/x-www-form-urlencoded' },
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
         auth: {
           username: clientId,
-          password: clientSecret
+          password: clientSecret,
         },
-        data : data
+        data: data,
       };
 
-      this.logger.log('Config: ' + JSON.stringify(config))
+      this.logger.log('Config: ' + JSON.stringify(config));
       const response = await axios(config);
-      this.logger.log('response.data: ' + JSON.stringify(response.data))
-      return response.data
+      this.logger.log('response.data: ' + JSON.stringify(response.data));
+      return response.data;
     } catch (error) {
       const message =
         'Error while getting access token from token endpoint: ' +
@@ -56,7 +63,6 @@ export class FhirService {
         error;
       this.logger.error(message);
       throw new InternalServerErrorException(message);
-      
     }
   }
 }

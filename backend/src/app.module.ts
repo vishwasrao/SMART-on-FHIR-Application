@@ -5,10 +5,10 @@ import { RegistryModule } from './registry/registry.module';
 
 @Module({
   imports: [
-    AuthModule, 
+    AuthModule,
     RegistryModule,
     FhirModule,
-    CacheModule.register({ isGlobal: true, })
+    CacheModule.register({ isGlobal: true }),
   ],
   controllers: [],
   providers: [],
