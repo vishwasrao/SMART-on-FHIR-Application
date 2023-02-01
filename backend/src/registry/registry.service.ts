@@ -18,10 +18,9 @@ export class RegistryService {
         issuer,
     );
     const expression =
-      "[apps[appName='" + appName + "'][issuer='" + issuer + "']]";
-    this.logger.log('Expression: ' + expression);
+      "apps[appName='" + appName + "'][issuer='" + issuer + "']";
     const appRegistration = await jsonata(expression).evaluate(REGISTRATIONS);
-    if (appRegistration.length === 0) {
+    if (!appRegistration) {
       const message =
         'No regisration found found for appName: ' +
         appName +
