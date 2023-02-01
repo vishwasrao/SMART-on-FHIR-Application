@@ -7,13 +7,14 @@ import { FhirService } from 'src/fhir/fhir.service';
 export class AuthService {
 
     private readonly logger = new Logger(AuthService.name)
+
     constructor(
         private readonly registryService: RegistryService,
         private readonly fhirService: FhirService,
         @Inject(CACHE_MANAGER) private cacheManager: Cache
-        ) {}
+    ) { }
 
-    async init(appName: string, iss: string, launch: string): Promise<any>{
+    async init(appName: string, iss: string, launch: string): Promise<any> {
         this.logger.log('appName:- ' + appName + ' iss:- ' + iss + ' launch:- ' + launch)
         const appRegistration = await this.registryService.getRegistration(appName, iss)
         // Save this registration into cache
@@ -31,13 +32,20 @@ export class AuthService {
         const config: any = await this.cacheManager.get(wellKnownConfigKeyName)
         this.logger.log('wellKnownConfig: ' + JSON.stringify(config))
 
-        const url = config.authorization_endpoint 
-      + '?response_type=code&client_id=' + appReg.clientId 
-      + '&redirect_uri='  + appReg.redirectUrl + '&launch=' + launch
-      + '&scope=' + appReg.scope
-      + '&state=abcd1234' 
-      + '&aud=' + iss
+        const url = config.authorization_endpoint
+            + '?response_type=code&client_id=' + appReg.clientId
+            + '&redirect_uri=' + appReg.redirectUrl + '&launch=' + launch
+            + '&scope=' + appReg.scope
+            + '&state=abcd1234'
+            + '&aud=' + iss
 
         return url
+    }
+    
+    async callback(authorizationCode: string, state: string) {
+        this.logger.log('authorizationCode: ' + authorizationCode)
+        // Get accessToken
+        return 'abcd'
+        
     }
 }
