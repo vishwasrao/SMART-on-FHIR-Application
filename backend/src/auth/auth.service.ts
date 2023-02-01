@@ -7,6 +7,8 @@ import { FhirService } from 'src/fhir/fhir.service';
 export class AuthService {
 
     private readonly logger = new Logger(AuthService.name)
+    private appName: string
+    private issuer: string
 
     constructor(
         private readonly registryService: RegistryService,
@@ -16,7 +18,10 @@ export class AuthService {
 
     async init(appName: string, iss: string, launch: string): Promise<any> {
         this.logger.log('appName:- ' + appName + ' iss:- ' + iss + ' launch:- ' + launch)
+        this.appName = appName
+        this.issuer = iss
         const appRegistration = await this.registryService.getRegistration(appName, iss)
+
         // Save this registration into cache
         const appRegKeyName = appName + '_appRegistration'
         await this.cacheManager.set(appRegKeyName, appRegistration)
@@ -44,7 +49,19 @@ export class AuthService {
     
     async callback(authorizationCode: string, state: string) {
         this.logger.log('authorizationCode: ' + authorizationCode)
-        // Get accessToken
+        const wellKnownConfigKeyName = this.appName + '_wellKnownConfig'
+        const config: any = await this.cacheManager.get(wellKnownConfigKeyName)
+        const appRegKeyName = this.appName + '_appRegistration'
+        const appRegistration: any = await this.cacheManager.get(appRegKeyName)
+
+        const accessTokenResponseObject = await this.fhirService.getAccessToken(
+            config.token_endpoint, 
+            authorizationCode,
+            appRegistration.redirectUrl,
+            appRegistration.clientId,
+            appRegistration.clientSecret
+            )
+            this.logger.log('accessTokenResponseObject: ' + JSON.stringify(accessTokenResponseObject))
         return 'abcd'
         
     }
