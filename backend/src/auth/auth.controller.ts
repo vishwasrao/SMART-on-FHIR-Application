@@ -6,11 +6,11 @@ export class AuthController {
     constructor(private readonly authService: AuthService){}
 
     @Get('/init/:appName')
-    init(
+    async init(
         @Param('appName') appName: String,
         @Query('iss') iss: String,
         @Query('launch') launch:String
-     ): String{
-        return this.authService.init(appName, iss, launch)
+     ): Promise<String>{
+        return await this.authService.init(appName, iss, launch)
     }
 }

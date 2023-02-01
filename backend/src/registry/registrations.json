@@ -1,0 +1,23 @@
+{
+    "apps":[
+        {
+        "appName": "",
+        "issuer": "",
+        "clientId": "",
+        "clientSecret": "",
+        "scope": "",
+        "launchUrl": "",
+        "redirectUrl": ""
+        },
+        {
+            "appName": "",
+            "issuer": "",
+            "clientId": "",
+            "clientSecret": "",
+            "scope": "",
+            "launchUrl": "",
+            "redirectUrl": ""
+            }
+
+    ]
+}
