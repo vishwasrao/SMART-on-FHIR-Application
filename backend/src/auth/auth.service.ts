@@ -7,7 +7,7 @@ import { FhirService } from 'src/fhir/fhir.service';
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
   private appName: string;
-  private issuer: string;
+  private TTL = 60000;
 
   constructor(
     private readonly registryService: RegistryService,
@@ -20,7 +20,6 @@ export class AuthService {
       'appName:- ' + appName + ' iss:- ' + iss + ' launch:- ' + launch,
     );
     this.appName = appName;
-    this.issuer = iss;
     const appRegistration = await this.registryService.getRegistration(
       appName,
       iss,
@@ -28,18 +27,20 @@ export class AuthService {
 
     // Save this registration into cache
     const appRegKeyName = appName + '_appRegistration';
-    await this.cacheManager.set(appRegKeyName, appRegistration);
+    await this.cacheManager.set(appRegKeyName, appRegistration, this.TTL);
 
     const appReg: any = await this.cacheManager.get(appRegKeyName);
-    this.logger.log('appRegistration: ' + JSON.stringify(appReg));
 
     const wellKnownConfig = await this.fhirService.getWellKnownConfig(iss);
 
     const wellKnownConfigKeyName = appName + '_wellKnownConfig';
-    await this.cacheManager.set(wellKnownConfigKeyName, wellKnownConfig);
+    await this.cacheManager.set(
+      wellKnownConfigKeyName,
+      wellKnownConfig,
+      this.TTL,
+    );
 
     const config: any = await this.cacheManager.get(wellKnownConfigKeyName);
-    this.logger.log('wellKnownConfig: ' + JSON.stringify(config));
 
     const url =
       config.authorization_endpoint +
@@ -62,17 +63,21 @@ export class AuthService {
     this.logger.log(
       'authorizationCode: ' + authorizationCode + ' State: ' + state,
     );
-    const wellKnownConfigKeyName = this.appName + '_wellKnownConfig';
-    const config: any = await this.cacheManager.get(wellKnownConfigKeyName);
-    const appRegKeyName = this.appName + '_appRegistration';
-    const appRegistration: any = await this.cacheManager.get(appRegKeyName);
+    const wellKnownConfigKeyName1 = this.appName + '_wellKnownConfig';
+    this.logger.log('wellKnownConfigKeyName1: ' + wellKnownConfigKeyName1);
+    const config1: any = await this.cacheManager.get(wellKnownConfigKeyName1);
+    this.logger.log('****wellKnownConfig1: ' + JSON.stringify(config1));
+    const appRegKeyName1 = this.appName + '_appRegistration';
+    const appRegistration1: any = await this.cacheManager.get(appRegKeyName1);
+
+    this.logger.log('appRegistration: ' + JSON.stringify(appRegistration1));
 
     const accessTokenResponseObject = await this.fhirService.getAccessToken(
-      config.token_endpoint,
+      config1.token_endpoint,
       authorizationCode,
-      appRegistration.redirectUrl,
-      appRegistration.clientId,
-      appRegistration.clientSecret,
+      appRegistration1.redirectUrl,
+      appRegistration1.clientId,
+      appRegistration1.clientSecret,
     );
     this.logger.log(
       'accessTokenResponseObject: ' + JSON.stringify(accessTokenResponseObject),

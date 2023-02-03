@@ -50,10 +50,7 @@ export class FhirService {
         },
         data: data,
       };
-
-      this.logger.log('Config: ' + JSON.stringify(config));
       const response = await axios(config);
-      this.logger.log('response.data: ' + JSON.stringify(response.data));
       return response.data;
     } catch (error) {
       const message =
@@ -65,4 +62,7 @@ export class FhirService {
       throw new InternalServerErrorException(message);
     }
   }
+
+  async getClinicaData(){}
+  
 }
