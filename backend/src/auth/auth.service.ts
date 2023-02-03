@@ -27,6 +27,8 @@ export class AuthService {
     const cacheMap = {
       appRegistration: appRegistration,
       wellKnownConfig: wellKnownConfig,
+      callBackParams: null,
+      accessTokenRespons: null,
     };
     const sessionId = crypto.randomUUID();
     await this.cacheManager.set(sessionId, cacheMap, this.TTL);
@@ -53,9 +55,6 @@ export class AuthService {
     this.logger.log(
       'authorizationCode: ' + authorizationCode + ' State: ' + state,
     );
-
-    const callBackParams = { authorizationCode, state };
-
     const sessionMap: any = await this.cacheManager.get(state);
     this.logger.log('****sessionMap: ' + JSON.stringify(sessionMap));
 
@@ -70,8 +69,8 @@ export class AuthService {
       'accessTokenResponseObject: ' + JSON.stringify(accessTokenResponse),
     );
 
-    sessionMap['callBackParams'] = callBackParams;
-    sessionMap['accessTokenRespons'] = accessTokenResponse;
+    sessionMap.callBackParams = { authorizationCode, state };
+    sessionMap.accessTokenRespons = accessTokenResponse;
 
     await this.cacheManager.set(state, sessionMap, this.TTL);
 

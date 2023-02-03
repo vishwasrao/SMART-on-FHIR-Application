@@ -22,12 +22,17 @@ export class AuthController {
   async callback(
     @Query('code') authorizationCode: string,
     @Query('state') state: string,
-    @Res({ passthrough: true }) res: Response
+    @Res({ passthrough: true }) res: Response,
   ) {
     const launchUrl = await this.authService.callback(authorizationCode, state);
     // return { url: launchUrl };
-    res.cookie('sessionId', state, {maxAge: 3600000, httpOnly: true, sameSite:false, secure: true})
-    res.status(HttpStatus.FOUND)
-    res.redirect(launchUrl)
+    res.cookie('sessionId', state, {
+      maxAge: 3600000,
+      httpOnly: true,
+      sameSite: false,
+      secure: true,
+    });
+    res.status(HttpStatus.FOUND);
+    res.redirect(launchUrl);
   }
 }
