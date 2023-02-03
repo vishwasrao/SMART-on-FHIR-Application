@@ -8,6 +8,10 @@ import { fileURLToPath, URL } from 'node:url'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  // Change build out to backend for static serve
+  build: {
+    outDir: '../backend/client'
+  },
   plugins: [
     vue({ 
       template: { transformAssetUrls }
