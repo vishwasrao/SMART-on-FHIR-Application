@@ -5,6 +5,6 @@ import { ClinicalDataService } from './clinical-data.service';
 
 @Module({
   controllers: [ClinicalDataController],
-  providers: [ClinicalDataService, FhirService]
+  providers: [ClinicalDataService, FhirService],
 })
 export class ClinicalDataModule {}

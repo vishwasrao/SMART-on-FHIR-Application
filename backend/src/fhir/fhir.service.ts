@@ -63,6 +63,7 @@ export class FhirService {
     }
   }
 
-  async getClinicaData(){}
-  
+  async getClinicaData() {
+    return 'abcd';
+  }
 }
