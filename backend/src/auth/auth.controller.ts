@@ -17,6 +17,7 @@ export class AuthController {
   }
 
   @Get('/callback')
+  @Redirect('http://localhost:3000', 302)
   async callback(
     @Query('code') authorizationCode: string,
     @Query('state') state: string,

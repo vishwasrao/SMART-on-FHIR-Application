@@ -82,6 +82,6 @@ export class AuthService {
     this.logger.log(
       'accessTokenResponseObject: ' + JSON.stringify(accessTokenResponseObject),
     );
-    return 'abcd';
+    return appRegistration1.launchUrl;
   }
 }
