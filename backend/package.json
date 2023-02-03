@@ -23,6 +23,7 @@
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
+    "@nestjs/serve-static": "^3.0.0",
     "axios": "^1.2.6",
     "cache-manager": "^5.1.4",
     "jsonata": "^2.0.1",
