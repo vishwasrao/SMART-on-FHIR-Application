@@ -63,7 +63,35 @@ export class FhirService {
     }
   }
 
-  async getClinicaData() {
-    return 'abcd';
+  async getClinicaData(
+    fhirServerUrl: string,
+    accessToken: string,
+    patientId: string,
+    clinicalResources: string[],
+  ) {
+    this.logger.log('accessToken: ' + accessToken);
+    this.logger.log('clinicalResources: ' + JSON.stringify(clinicalResources));
+    const fhirQueries = this.createFhirQueries(
+      fhirServerUrl,
+      accessToken,
+      patientId,
+      clinicalResources,
+    );
+    return JSON.stringify(fhirQueries);
+  }
+
+  createFhirQueries(
+    fhirServerUrl: string,
+    accessToken: string,
+    patientId: string,
+    clinicalResources: string[],
+  ) {
+    const fhirQueries = [];
+    for (const clinicalResource of clinicalResources) {
+      const query =
+        fhirServerUrl + '/' + clinicalResource + '?patient=' + patientId;
+      fhirQueries.push(query);
+    }
+    return fhirQueries;
   }
 }

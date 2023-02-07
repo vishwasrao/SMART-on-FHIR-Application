@@ -33,14 +33,27 @@ export default {
     };
   },
   async mounted() {
-    await this.callBackend();
+    await this.getAuthFlowData();
+    await this.getClinicalData();
   },
   methods: {
-    async callBackend() {
+    async getAuthFlowData() {
       const self = this;
       console.log('Calling backend');
       try {
         const response = await axios.get('/auth/authFlowData', { withCredentials: true });
+        console.log(JSON.stringify(response.data));
+        self.authInit =JSON.stringify(response.data, null, 2);
+
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
+    async getClinicalData() {
+      const self = this;
+      try {
+        const response = await axios.get('/clinical-data', { withCredentials: true });
         console.log(JSON.stringify(response.data));
         self.authInit =JSON.stringify(response.data, null, 2);
 
