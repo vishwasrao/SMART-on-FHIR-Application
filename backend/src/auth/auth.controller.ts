@@ -1,7 +1,15 @@
-import { Controller, Get, Param, Query, Redirect, Res } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Query,
+  Redirect,
+  Req,
+  Res,
+} from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common/enums';
 import { AuthService } from './auth.service';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -34,5 +42,14 @@ export class AuthController {
     });
     res.status(HttpStatus.FOUND);
     res.redirect(launchUrl);
+  }
+
+  @Get('/authFlowData')
+  async getAuthFlowData(@Req() request: Request) {
+    //Get sessionId from cookie and send it
+    console.log('Request for getting auth flow data!!!');
+    const sessionId = request.cookies['sessionId'];
+    console.log(sessionId);
+    return await this.authService.getAuthFlowData(sessionId);
   }
 }

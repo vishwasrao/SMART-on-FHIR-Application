@@ -25,6 +25,7 @@ export class AuthService {
     );
     const wellKnownConfig = await this.fhirService.getWellKnownConfig(iss);
     const cacheMap = {
+      authInit: { appName, iss },
       appRegistration: appRegistration,
       wellKnownConfig: wellKnownConfig,
       callBackParams: null,
@@ -80,5 +81,10 @@ export class AuthService {
     );
 
     return sessionMap.appRegistration.launchUrl;
+  }
+
+  async getAuthFlowData(sessionId: string) {
+    // Get clinical data resources from cache
+    return await await this.cacheManager.get(sessionId);
   }
 }
