@@ -14,7 +14,7 @@ import { join } from 'path';
     CacheModule.register({ isGlobal: true }),
     ClinicalDataModule,
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'static'),
+      rootPath: join(__dirname, '..', 'client'),
     }),
   ],
   controllers: [],

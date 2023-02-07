@@ -2,11 +2,11 @@ import { CACHE_MANAGER, Inject, Injectable, Logger } from '@nestjs/common';
 import { RegistryService } from 'src/registry/registry.service';
 import { Cache } from 'cache-manager';
 import { FhirService } from 'src/fhir/fhir.service';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
-  private appName: string;
   private TTL = 60000;
 
   constructor(
@@ -19,40 +19,33 @@ export class AuthService {
     this.logger.log(
       'appName:- ' + appName + ' iss:- ' + iss + ' launch:- ' + launch,
     );
-    this.appName = appName;
     const appRegistration = await this.registryService.getRegistration(
       appName,
       iss,
     );
-
-    // Save this registration into cache
-    const appRegKeyName = appName + '_appRegistration';
-    await this.cacheManager.set(appRegKeyName, appRegistration, this.TTL);
-
-    const appReg: any = await this.cacheManager.get(appRegKeyName);
-
     const wellKnownConfig = await this.fhirService.getWellKnownConfig(iss);
-
-    const wellKnownConfigKeyName = appName + '_wellKnownConfig';
-    await this.cacheManager.set(
-      wellKnownConfigKeyName,
-      wellKnownConfig,
-      this.TTL,
-    );
-
-    const config: any = await this.cacheManager.get(wellKnownConfigKeyName);
+    const cacheMap = {
+      authInit: { appName, iss },
+      appRegistration: appRegistration,
+      wellKnownConfig: wellKnownConfig,
+      callBackParams: null,
+      accessTokenRespons: null,
+    };
+    const sessionId = crypto.randomUUID();
+    await this.cacheManager.set(sessionId, cacheMap, this.TTL);
 
     const url =
-      config.authorization_endpoint +
+      wellKnownConfig.authorization_endpoint +
       '?response_type=code&client_id=' +
-      appReg.clientId +
+      appRegistration.clientId +
       '&redirect_uri=' +
-      appReg.redirectUrl +
+      appRegistration.redirectUrl +
       '&launch=' +
       launch +
       '&scope=' +
-      appReg.scope +
-      '&state=abcd1234' +
+      appRegistration.scope +
+      '&state=' +
+      sessionId +
       '&aud=' +
       iss;
 
@@ -63,25 +56,35 @@ export class AuthService {
     this.logger.log(
       'authorizationCode: ' + authorizationCode + ' State: ' + state,
     );
-    const wellKnownConfigKeyName1 = this.appName + '_wellKnownConfig';
-    this.logger.log('wellKnownConfigKeyName1: ' + wellKnownConfigKeyName1);
-    const config1: any = await this.cacheManager.get(wellKnownConfigKeyName1);
-    this.logger.log('****wellKnownConfig1: ' + JSON.stringify(config1));
-    const appRegKeyName1 = this.appName + '_appRegistration';
-    const appRegistration1: any = await this.cacheManager.get(appRegKeyName1);
+    const sessionMap: any = await this.cacheManager.get(state);
+    this.logger.log('****sessionMap: ' + JSON.stringify(sessionMap));
 
-    this.logger.log('appRegistration: ' + JSON.stringify(appRegistration1));
-
-    const accessTokenResponseObject = await this.fhirService.getAccessToken(
-      config1.token_endpoint,
+    const accessTokenResponse = await this.fhirService.getAccessToken(
+      sessionMap.wellKnownConfig.token_endpoint,
       authorizationCode,
-      appRegistration1.redirectUrl,
-      appRegistration1.clientId,
-      appRegistration1.clientSecret,
+      sessionMap.appRegistration.redirectUrl,
+      sessionMap.appRegistration.clientId,
+      sessionMap.appRegistration.clientSecret,
     );
     this.logger.log(
-      'accessTokenResponseObject: ' + JSON.stringify(accessTokenResponseObject),
+      'accessTokenResponseObject: ' + JSON.stringify(accessTokenResponse),
     );
-    return 'abcd';
+
+    sessionMap.callBackParams = { authorizationCode, state };
+    sessionMap.accessTokenRespons = accessTokenResponse;
+
+    await this.cacheManager.set(state, sessionMap, this.TTL);
+
+    const updatedSessionMap: any = await this.cacheManager.get(state);
+    this.logger.log(
+      '****updatedSessionMap: ' + JSON.stringify(updatedSessionMap),
+    );
+
+    return sessionMap.appRegistration.launchUrl;
+  }
+
+  async getAuthFlowData(sessionId: string) {
+    // Get clinical data resources from cache
+    return await await this.cacheManager.get(sessionId);
   }
 }

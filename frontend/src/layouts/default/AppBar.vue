@@ -1,13 +1,14 @@
 <template>
-  <v-app-bar flat>
+  <v-app-bar 
+        density="compact">
     <v-app-bar-title>
       <v-icon icon="mdi-circle-slice-4" />
 
-      Base Preset
+      SoF Demo Application
     </v-app-bar-title>
   </v-app-bar>
 </template>
 
 <script lang="ts" setup>
-  //
+ //
 </script>
