@@ -63,7 +63,62 @@ export class FhirService {
     }
   }
 
-  async getClinicaData() {
-    return 'abcd';
+  async getClinicaData(
+    fhirServerUrl: string,
+    accessToken: string,
+    patientId: string,
+    clinicalResources: string[],
+  ) {
+    const fhirQueries = this.createFhirQueries(
+      fhirServerUrl,
+      accessToken,
+      patientId,
+      clinicalResources,
+    );
+    try {
+      const clinicaData = [];
+      const responses = await axios.all(
+        fhirQueries.map((fhirQuery) =>
+          axios.get(fhirQuery, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              Accept: 'application/json',
+            },
+          }),
+        ),
+      );
+
+      for (const response of responses) {
+        clinicaData.push({
+          url: response.config.url,
+          data: response.data,
+        });
+      }
+      return JSON.stringify(clinicaData);
+    } catch (error) {
+      const message = 'Error while getting clinical data, error: ' + error;
+      this.logger.error(message);
+      throw new InternalServerErrorException(message);
+    }
+  }
+
+  createFhirQueries(
+    fhirServerUrl: string,
+    accessToken: string,
+    patientId: string,
+    clinicalResources: string[],
+  ) {
+    const fhirQueries = [];
+    for (const clinicalResource of clinicalResources) {
+      let query: string;
+      if (clinicalResource === 'Patient') {
+        query = fhirServerUrl + '/' + clinicalResource + '/' + patientId;
+      } else {
+        query =
+          fhirServerUrl + '/' + clinicalResource + '?patient=' + patientId;
+      }
+      fhirQueries.push(query);
+    }
+    return fhirQueries;
   }
 }
