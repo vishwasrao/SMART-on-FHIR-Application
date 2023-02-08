@@ -29,7 +29,7 @@ export class AuthService {
       appRegistration: appRegistration,
       wellKnownConfig: wellKnownConfig,
       callBackParams: null,
-      accessTokenRespons: null,
+      accessTokenResponse: null,
     };
     const sessionId = crypto.randomUUID();
     await this.cacheManager.set(sessionId, cacheMap, this.TTL);
@@ -57,8 +57,6 @@ export class AuthService {
       'authorizationCode: ' + authorizationCode + ' State: ' + state,
     );
     const sessionMap: any = await this.cacheManager.get(state);
-    this.logger.log('****sessionMap: ' + JSON.stringify(sessionMap));
-
     const accessTokenResponse = await this.fhirService.getAccessToken(
       sessionMap.wellKnownConfig.token_endpoint,
       authorizationCode,
@@ -66,25 +64,13 @@ export class AuthService {
       sessionMap.appRegistration.clientId,
       sessionMap.appRegistration.clientSecret,
     );
-    this.logger.log(
-      'accessTokenResponseObject: ' + JSON.stringify(accessTokenResponse),
-    );
-
     sessionMap.callBackParams = { authorizationCode, state };
-    sessionMap.accessTokenRespons = accessTokenResponse;
-
+    sessionMap.accessTokenResponse = accessTokenResponse;
     await this.cacheManager.set(state, sessionMap, this.TTL);
-
-    const updatedSessionMap: any = await this.cacheManager.get(state);
-    this.logger.log(
-      '****updatedSessionMap: ' + JSON.stringify(updatedSessionMap),
-    );
-
     return sessionMap.appRegistration.launchUrl;
   }
 
   async getAuthFlowData(sessionId: string) {
-    // Get clinical data resources from cache
     return await await this.cacheManager.get(sessionId);
   }
 }
