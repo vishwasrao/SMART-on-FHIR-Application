@@ -69,15 +69,37 @@ export class FhirService {
     patientId: string,
     clinicalResources: string[],
   ) {
-    this.logger.log('accessToken: ' + accessToken);
-    this.logger.log('clinicalResources: ' + JSON.stringify(clinicalResources));
     const fhirQueries = this.createFhirQueries(
       fhirServerUrl,
       accessToken,
       patientId,
       clinicalResources,
     );
-    return JSON.stringify(fhirQueries);
+    try {
+      const clinicaData = [];
+      const responses = await axios.all(
+        fhirQueries.map((fhirQuery) =>
+          axios.get(fhirQuery, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              Accept: 'application/json',
+            },
+          }),
+        ),
+      );
+
+      for (const response of responses) {
+        clinicaData.push({
+          url: response.config.url,
+          data: response.data,
+        });
+      }
+      return JSON.stringify(clinicaData);
+    } catch (error) {
+      const message = 'Error while getting clinical data, error: ' + error;
+      this.logger.error(message);
+      throw new InternalServerErrorException(message);
+    }
   }
 
   createFhirQueries(
@@ -88,8 +110,13 @@ export class FhirService {
   ) {
     const fhirQueries = [];
     for (const clinicalResource of clinicalResources) {
-      const query =
-        fhirServerUrl + '/' + clinicalResource + '?patient=' + patientId;
+      let query: string;
+      if (clinicalResource === 'Patient') {
+        query = fhirServerUrl + '/' + clinicalResource + '/' + patientId;
+      } else {
+        query =
+          fhirServerUrl + '/' + clinicalResource + '?patient=' + patientId;
+      }
       fhirQueries.push(query);
     }
     return fhirQueries;

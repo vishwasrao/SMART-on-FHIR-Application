@@ -1,7 +1,6 @@
 import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { FhirService } from 'src/fhir/fhir.service';
 import { Cache } from 'cache-manager';
-import { channel } from 'diagnostics_channel';
 
 @Injectable()
 export class ClinicalDataService {
