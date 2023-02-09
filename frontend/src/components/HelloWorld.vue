@@ -3,7 +3,7 @@
     <v-responsive class="d-flex align-center text-left fill-height">
       <v-card class="mx-auto" variant="outlined">
         <template v-slot:title>
-          authInit
+          Launch App: EHR Launch
         </template>
         <v-card-text>
           <v-textarea :model-value="authInit" variant="outlined" rows="4" row-height="25" shaped></v-textarea>
@@ -12,7 +12,7 @@
       <v-divider></v-divider>
       <v-card class="mx-auto" variant="outlined">
         <template v-slot:title>
-          wellKnownConfig
+          Retrieve .well-known/smart-configuration
         </template>
         <v-card-text>
           <v-textarea :model-value="wellKnownConfig" variant="outlined" rows="4" row-height="25" shaped></v-textarea>
@@ -21,7 +21,7 @@
       <v-divider></v-divider>
       <v-card class="mx-auto" variant="outlined">
         <template v-slot:title>
-          callBackParams
+          Obtain authorization code
         </template>
         <v-card-text>
           <v-textarea :model-value="callBackParams" variant="outlined" rows="4" row-height="25" shaped></v-textarea>
@@ -30,7 +30,7 @@
       <v-divider></v-divider>
       <v-card class="mx-auto" variant="outlined">
         <template v-slot:title>
-          accessTokenResponse
+          Obtain access token
         </template>
         <v-card-text>
           <v-textarea :model-value="accessTokenResponse" variant="outlined" rows="4" row-height="25" shaped></v-textarea>
@@ -39,7 +39,7 @@
       <v-divider></v-divider>
       <v-card class="mx-auto" variant="outlined">
         <template v-slot:title>
-          clinicalData
+          Access FHIR API
         </template>
         <v-card-text>
           <v-textarea :model-value="clinicalData" variant="outlined" rows="4" row-height="25" shaped></v-textarea>

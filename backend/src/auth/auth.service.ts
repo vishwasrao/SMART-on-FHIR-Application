@@ -25,7 +25,7 @@ export class AuthService {
     );
     const wellKnownConfig = await this.fhirService.getWellKnownConfig(iss);
     const cacheMap = {
-      authInit: { appName, iss },
+      authInit: { appName, iss, launch },
       appRegistration: appRegistration,
       wellKnownConfig: wellKnownConfig,
       callBackParams: null,

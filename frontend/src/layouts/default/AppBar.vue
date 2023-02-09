@@ -1,8 +1,8 @@
 <template>
-  <v-app-bar 
-        density="compact">
+  <v-app-bar density="compact">
+    <v-img class="mx-2" src="@/assets/fhir.png" max-height="25" max-width="25" contain></v-img>
     <v-app-bar-title>
-      <v-icon icon="mdi-circle-slice-4" />
+
 
       SoF Demo Application
     </v-app-bar-title>
