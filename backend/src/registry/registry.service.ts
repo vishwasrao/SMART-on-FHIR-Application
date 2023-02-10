@@ -1,10 +1,6 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import * as fs from 'fs';
-import * as jsonata from 'jsonata';
-
-const REGISTRATIONS = JSON.parse(
-  fs.readFileSync('src/registry/registrations.json', 'utf8'),
-);
+import jsonata from 'jsonata';
+import REGISTRATIONS from './registrations.json';
 
 @Injectable()
 export class RegistryService {

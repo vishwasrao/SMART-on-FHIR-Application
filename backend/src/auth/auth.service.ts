@@ -2,7 +2,7 @@ import { CACHE_MANAGER, Inject, Injectable, Logger } from '@nestjs/common';
 import { RegistryService } from 'src/registry/registry.service';
 import { Cache } from 'cache-manager';
 import { FhirService } from 'src/fhir/fhir.service';
-import * as crypto from 'crypto';
+import crypto from 'crypto';
 
 @Injectable()
 export class AuthService {
