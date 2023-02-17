@@ -9,6 +9,11 @@ Demo Application for SMART on FHIR. This application demonstrates steps involved
 5. Obtain access token
 6. Access FHIR API
 
+# App Registration
+This app has been tested against [Logica Sandbox](https://sandbox.logicahealth.org/)
+Register your application in Logica Sandbox and update appName, issuer, clientId and clientSecret
+into `backend/src/registry/registration.json`
+
 # Frontend
 Run all commands inside `frontend` directory
 Install all dependencies
@@ -68,9 +73,14 @@ Run Dev
 ```
 npm run start:dev
 ```
+This will start application on port `3000`
+You can go Logica Sandbox and launch application.
 
 Build for production
 
 ```
 npm run build
 ```
+
+# Note
+Please use FireFox browswer to test as Chrome does not allow third party cookies to be set.
