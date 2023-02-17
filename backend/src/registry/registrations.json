@@ -1,23 +1,18 @@
 {
-    "apps":[
+    "apps": [
         {
-        "appName": "",
-        "issuer": "",
-        "clientId": "",
-        "clientSecret": "",
-        "scope": "",
-        "launchUrl": "",
-        "redirectUrl": ""
-        },
-        {
-            "appName": "",
-            "issuer": "",
-            "clientId": "",
-            "clientSecret": "",
-            "scope": "",
-            "launchUrl": "",
-            "redirectUrl": ""
-            }
-
+            "appName": "<appName>",
+            "issuer": "<issuer>",
+            "clientId": "<clientId>",
+            "clientSecret": "<clientSecret>",
+            "scope": "launch openid profile fhirUser user/Patient.read user/Condition.read user/Encounter.read",
+            "launchUrl": "http://localhost:3000",
+            "redirectUrl": "http://localhost:3000/auth/callback",
+            "clinicalData": [
+                "Patient",
+                "Condition",
+                "Encounter"
+            ]
+        }
     ]
 }
